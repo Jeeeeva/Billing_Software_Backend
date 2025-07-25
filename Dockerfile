@@ -1,21 +1,13 @@
-# Stage 1: Build the application using Maven
-FROM maven:3.9.6-eclipse-temurin-21 AS builder
-
+# Stage 1: Build
+FROM maven:3.8.7-eclipse-temurin-17 as builder
 WORKDIR /app
-
 COPY . .
-
 RUN chmod +x mvnw
-
 RUN ./mvnw clean package -DskipTests
 
-# Stage 2: Run the application using JDK
-FROM eclipse-temurin:21-jdk-alpine
-
+# Stage 2: Run
+FROM eclipse-temurin:17-jdk
 WORKDIR /app
-
 COPY --from=builder /app/target/*.jar app.jar
-
 EXPOSE 8080
-
 ENTRYPOINT ["java", "-jar", "app.jar"]
